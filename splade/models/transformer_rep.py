@@ -5,6 +5,7 @@ from transformers import AutoTokenizer, AutoModelForMaskedLM, AutoModel
 
 from ..tasks.amp import NullContextManager
 from ..utils.utils import generate_bow, clean_bow, normalize, pruning
+import ipdb
 
 """
 we provide abstraction classes from which we can easily derive representation-based models with transformers like SPLADE
@@ -144,6 +145,8 @@ class Splade(SiameseBase):
 
     def encode(self, tokens, is_q):
         out = self.encode_(tokens, is_q)["logits"]  # shape (bs, pad_len, voc_size)
+        
+        # ipdb.set_trace()
         if self.agg == "sum":
             return torch.sum(torch.log(1 + torch.relu(out)) * tokens["attention_mask"].unsqueeze(-1), dim=1)
         else:
