@@ -5,7 +5,7 @@ import ipdb
 from tqdm import tqdm
 import pickle
 
-with open('/workspace/ssd0/byeongcheol/splade/save_doc_10000.pkl', 'rb') as f:
+with open('/workspace/ssd0/byeongcheol/splade/doc_emb/save_doc_1.pkl', 'rb') as f:
     data = pickle.load(f)
 
 ipdb.set_trace()

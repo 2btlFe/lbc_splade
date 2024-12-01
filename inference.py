@@ -29,20 +29,11 @@ loader = CollectionDataLoader(dataset=dataset, tokenizer_type=model_type_or_dir,
 device = "cuda:0"
 model = Splade(model_type_or_dir, agg="max").to(device)
 model.eval()
-# tokenizer = AutoTokenizer.from_pretrained(model_type_or_dir)
-
-# example document from MS MARCO passage collection (doc_id = 8003157)
-# df = pd.read_csv('/workspace/ssd0/byeongcheol/splade/msmarco-full/all_train_queries/all_train_queries/train_queries/raw.tsv', sep='\t')
-# df = pd.read_csv('/workspace/ssd0/byeongcheol/splade/msmarco-full/full_collection/raw.tsv', sep='\t')
 
 save_dir = 'doc_emb'
 os.makedirs(save_dir, exist_ok=True)
 
 result ={}
-num_iter = math.ceil(len(dataset)//batch_size)
-num_partition = num_iter // 10
-print(f"Total number of iteration is {num_iter, num_partition}")
-
 partition = 0
 with torch.no_grad():
     for i, token in enumerate(tqdm(loader)):
@@ -55,12 +46,13 @@ with torch.no_grad():
 
         # print(f"{id} - {doc_rep}")
         for id, doc in zip(ids, doc_rep):
-            result[id] = doc.cpu()
+            result[id.item()] = doc.cpu()
         # result[id] = doc_rep
 
-        if i % num_partition == 0:
+        if i % 2000 == 0:
             with open(f'{save_dir}/save_doc_{partition}.pkl', 'wb') as f:
                 pickle.dump(result, f)
+            del result
             result = {}
             partition += 1
 
