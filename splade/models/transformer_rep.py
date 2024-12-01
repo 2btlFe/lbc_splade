@@ -32,6 +32,8 @@ class TransformerRep(torch.nn.Module):
     def forward(self, **tokens):
         with torch.cuda.amp.autocast() if self.fp16 else NullContextManager():
             # tokens: output of HF tokenizer
+            
+            # ipdb.set_trace()
             out = self.transformer(**tokens)
             if self.output == "MLM":
                 return out
